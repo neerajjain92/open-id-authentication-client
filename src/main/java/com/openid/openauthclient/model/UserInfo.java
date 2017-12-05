@@ -1,33 +1,67 @@
 package com.openid.openauthclient.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class UserInfo {
-    private final String id;
-    private final String name;
-    private final String givenName;
-    private final String familyName;
-    private final String gender;
-    private final String picture;
-    private final String link;
 
-    @JsonCreator
-    public UserInfo(@JsonProperty("id") String id,
-                    @JsonProperty("name") String name,
-                    @JsonProperty("given_name") String givenName,
-                    @JsonProperty("family_name") String familyName,
-                    @JsonProperty("gender") String gender,
-                    @JsonProperty("picture") String picture,
-                    @JsonProperty("link") String link) {
-        this.id = id;
-        this.name = name;
-        this.givenName = givenName;
-        this.familyName = familyName;
-        this.gender = gender;
-        this.picture = picture;
-        this.link = link;
+    private String email;
+    private String firstName;
+    private String lastName;
+    private String persona;
+    private String accessToken;
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", persona='" + persona + '\'' +
+                ", accessToken='" + accessToken + '\'' +
+                '}';
     }
 
+    public UserInfo(String email, String firstName, String lastName) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPersona() {
+        return persona;
+    }
+
+    public void setPersona(String persona) {
+        this.persona = persona;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
 }

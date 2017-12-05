@@ -44,12 +44,12 @@ public class GoogleOpenIdConnectConfig {
         return details;
     }
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
-    @Resource
-    private OAuth2ClientContext oAuth2ClientContext;
+//    @SuppressWarnings("SpringJavaAutowiringInspection")
+//    @Resource
+//    private OAuth2ClientContext oAuth2ClientContext;
 
     @Bean
-    public OAuth2RestTemplate googleOpenIdTemplate() {
+    public OAuth2RestTemplate googleOpenIdTemplate(OAuth2ClientContext oAuth2ClientContext) {
         return new OAuth2RestTemplate(googleOpenIdResourceDetails(), oAuth2ClientContext);
     }
 

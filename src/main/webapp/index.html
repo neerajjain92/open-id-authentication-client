@@ -1,11 +1,1991 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>OpenIdConnect with Spring</title>
+    <title>CA Site</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="ca.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="bootstrap-combobox.css">
+    <script src="bootstrap-combobox.js"></script>
+    <link rel="stylesheet" href="register.css">
+    <script>
+        $(document).ready(function () {
+
+            function onSuccess(googleUser) {
+                console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+            }
+
+            function onFailure(error) {
+                console.log(error);
+            }
+
+            function renderButton() {
+                gapi.signin2.render('my-signin2', {
+                    'scope': 'profile email',
+                    'width': 240,
+                    'height': 50,
+                    'longtitle': true,
+                    'theme': 'dark',
+                    'onsuccess': onSuccess,
+                    'onfailure': onFailure
+                });
+            }
+
+            $('.combobox').combobox();
+            $("#freeTrial").click(function () {
+                //        $.ajax({url: "/register", success: function(result){
+                //            console.log(result);
+                //    }});
+                window.open("/authenticate", "_self");
+            });
+
+            $("#registerUser").click(function () {
+                register('projectMgmt');
+            });
+
+            $("#personaList").on("change", function () {
+                var value = $('#personaList').find(":selected").val();
+                register(value);
+            });
+
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+
+            var showRegisterForm = getParameterByName('showRegisterForm'),
+                firstName = getParameterByName('firstName'),
+                lastName = getParameterByName('lastName'),
+                email = getParameterByName('email');
+            accessToken = getParameterByName('accessToken')
+
+            if (showRegisterForm) {
+                //alert("Show Registrer form");
+                $('#modal-success').modal('toggle');
+            }
+
+            function register(persona) {
+                window.location.href = "/register?firstName=" + firstName + "&lastName=" + lastName + "&persona=" + persona + "&email=" + email;
+            }
+
+            function setPersona() {
+                console.log(persona);
+            }
+
+        });
+    </script>
 </head>
-<body>
-    <p>This is a sample application of how to connect Spring Security with Google OpenIdConnect.</p>
-    <a href="/authenticate">Go to some secured resource</a>
+<body class="cont" style="background: #fff">
+<div id="modal-success" class="modal modal-message modal-success fade" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <center>
+                    <p style="font-family: cursive; font-weight: bold">Congrats, you are all
+                        set!&nbsp;&nbsp;&nbsp;<i class="glyphicon glyphicon-thumbs-up"></i>
+                    </p>
+                </center>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <h4>Persona/Role Selection</h4>
+                    <select id="personaList" class="combobox input-large form-control" name="normal">
+                        <option value="" selected="selected">Please Select a Persona</option>
+                        <option value="projectMgmt">Project Manager</option>
+                        <option value="resourceMgmt">Resource Manager</option>
+                        <option value="projectMgmt">Financial Manager</option>
+                        <option value="projectMgmt">Product Manager</option>
+                        <option value="projectMgmt">Product Owner</option>
+                        <option value="projectMgmt">Timesheet Manager</option>
+                    </select>
+                </form>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+        <!-- / .modal-content -->
+    </div>
+    <!-- / .modal-dialog -->
+</div>
+<div class="header__utility">
+    <div class="header__container">
+        <!-- ngRepeat: item in menu -->
+        <div class="header__utility-item dynamic--item ng-scope" ng-repeat="item in menu">
+            <a ng-href="https://www.ca.com/us/trials.html?intcmp=util_nav" class="button" title="Free Trials"
+               target="_self" href="#freeTrialDiv">Free Trials</a>
+        </div>
+        <!-- end ngRepeat: item in menu -->
+        <div class="header__utility-item dynamic--item ng-scope" ng-repeat="item in menu">
+            <a ng-href="https://communities.ca.com/welcome?intcmp=util_nav" class="blue" title="Communities"
+               target="_blank" href="https://communities.ca.com/welcome?intcmp=util_nav">Communities</a>
+        </div>
+        <!-- end ngRepeat: item in menu -->
+        <div class="header__utility-item dynamic--item ng-scope" ng-repeat="item in menu">
+            <a ng-href="https://www.ca.com/us/developers.html?intcmp=util_nav" class="blue" title="CA for Developers"
+               target="_self" href="https://www.ca.com/us/developers.html?intcmp=util_nav">CA for Developers</a>
+        </div>
+        <!-- end ngRepeat: item in menu -->
+        <div class="header__utility-item icon-globe">
+            <a popover="" popover-template="languages" popover-trigger="click" popover-placement="bottom|center"
+               popover-timeout="1" popover-theme="header__utility-popover header__utility-popover-wordlwide"
+               class="header__utility-selected ng-scope">
+                North America (English)</a>
+            <div id="popover-1"
+                 class="header__utility-popover header__utility-popover-wordlwide popover-bottom-placement popover-center-align ng-scope"
+                 style="display: none;">
+                <p class="subhead">Choose a region to view customized content:</p>
+                <!-- ngRepeat: groups in regions track by $index -->
+                <div class="worldwide__column ng-scope" ng-repeat="groups in regions track by $index">
+                    <!-- ngRepeat: group in groups.group track by $index -->
+                    <ul ng-repeat="group in groups.group track by $index" class="worldwide__regions ng-scope">
+                        <li class="worldwide__region-label ng-binding">North America</li>
+                        <!-- ngRepeat: language in group.languages track by $index -->
+                        <li ng-repeat="language in group.languages track by $index" class="ng-scope">
+                            <a ng-href="/us.html?intcmp=selector-us" class="ng-binding"
+                               href="/us.html?intcmp=selector-us">English</a>
+                        </li>
+                        <!-- end ngRepeat: language in group.languages track by $index -->
+                    </ul>
+                    <!-- end ngRepeat: group in groups.group track by $index -->
+                    <ul ng-repeat="group in groups.group track by $index" class="worldwide__regions ng-scope">
+                        <li class="worldwide__region-label ng-binding">Latin America</li>
+                        <!-- ngRepeat: language in group.languages track by $index -->
+                        <li ng-repeat="language in group.languages track by $index" class="ng-scope">
+                            <a ng-href="/br.html?intcmp=selector-br" class="ng-binding"
+                               href="/br.html?intcmp=selector-br">Portuguese</a>
+                        </li>
+                        <!-- end ngRepeat: language in group.languages track by $index -->
+                        <li ng-repeat="language in group.languages track by $index" class="ng-scope">
+                            <a ng-href="/ar.html?intcmp=selector-ar" class="ng-binding"
+                               href="/ar.html?intcmp=selector-ar">Spanish</a>
+                        </li>
+                        <!-- end ngRepeat: language in group.languages track by $index -->
+                    </ul>
+                    <!-- end ngRepeat: group in groups.group track by $index -->
+                </div>
+                <!-- end ngRepeat: groups in regions track by $index -->
+                <div class="worldwide__column ng-scope" ng-repeat="groups in regions track by $index">
+                    <!-- ngRepeat: group in groups.group track by $index -->
+                    <ul ng-repeat="group in groups.group track by $index" class="worldwide__regions ng-scope">
+                        <li class="worldwide__region-label ng-binding">Europe, Middle East, and Africa</li>
+                        <!-- ngRepeat: language in group.languages track by $index -->
+                        <li ng-repeat="language in group.languages track by $index" class="ng-scope">
+                            <a ng-href="/gb.html?intcmp=selector-gb" class="ng-binding"
+                               href="/gb.html?intcmp=selector-gb">English</a>
+                        </li>
+                        <!-- end ngRepeat: language in group.languages track by $index -->
+                        <li ng-repeat="language in group.languages track by $index" class="ng-scope">
+                            <a ng-href="/fr.html?intcmp=selector-fr" class="ng-binding"
+                               href="/fr.html?intcmp=selector-fr">French</a>
+                        </li>
+                        <!-- end ngRepeat: language in group.languages track by $index -->
+                        <li ng-repeat="language in group.languages track by $index" class="ng-scope">
+                            <a ng-href="/de.html?intcmp=selector-de" class="ng-binding"
+                               href="/de.html?intcmp=selector-de">German</a>
+                        </li>
+                        <!-- end ngRepeat: language in group.languages track by $index -->
+                        <li ng-repeat="language in group.languages track by $index" class="ng-scope">
+                            <a ng-href="/it.html?intcmp=selector-it" class="ng-binding"
+                               href="/it.html?intcmp=selector-it">Italian</a>
+                        </li>
+                        <!-- end ngRepeat: language in group.languages track by $index -->
+                        <li ng-repeat="language in group.languages track by $index" class="ng-scope">
+                            <a ng-href="/es.html?intcmp=selector-es" class="ng-binding"
+                               href="/es.html?intcmp=selector-es">Spanish</a>
+                        </li>
+                        <!-- end ngRepeat: language in group.languages track by $index -->
+                    </ul>
+                    <!-- end ngRepeat: group in groups.group track by $index -->
+                </div>
+                <!-- end ngRepeat: groups in regions track by $index -->
+                <div class="worldwide__column ng-scope" ng-repeat="groups in regions track by $index">
+                    <!-- ngRepeat: group in groups.group track by $index -->
+                    <ul ng-repeat="group in groups.group track by $index" class="worldwide__regions ng-scope">
+                        <li class="worldwide__region-label ng-binding">Asia Pacific</li>
+                        <!-- ngRepeat: language in group.languages track by $index -->
+                        <li ng-repeat="language in group.languages track by $index" class="ng-scope">
+                            <a ng-href="/au.html?intcmp=selector-au" class="ng-binding"
+                               href="/au.html?intcmp=selector-au">English</a>
+                        </li>
+                        <!-- end ngRepeat: language in group.languages track by $index -->
+                        <li ng-repeat="language in group.languages track by $index" class="ng-scope">
+                            <a ng-href="/kr.html?intcmp=selector-kr" class="ng-binding"
+                               href="/kr.html?intcmp=selector-kr">Korean</a>
+                        </li>
+                        <!-- end ngRepeat: language in group.languages track by $index -->
+                        <li ng-repeat="language in group.languages track by $index" class="ng-scope">
+                            <a ng-href="/tw.html?intcmp=selector-tw" class="ng-binding"
+                               href="/tw.html?intcmp=selector-tw">Trad. Chinese</a>
+                        </li>
+                        <!-- end ngRepeat: language in group.languages track by $index -->
+                        <li ng-repeat="language in group.languages track by $index" class="ng-scope">
+                            <a ng-href="/cn.html?intcmp=selector-cn" class="ng-binding"
+                               href="/cn.html?intcmp=selector-cn">Simp. Chinese</a>
+                        </li>
+                        <!-- end ngRepeat: language in group.languages track by $index -->
+                    </ul>
+                    <!-- end ngRepeat: group in groups.group track by $index -->
+                    <ul ng-repeat="group in groups.group track by $index" class="worldwide__regions ng-scope">
+                        <li class="worldwide__region-label ng-binding">Japan</li>
+                        <!-- ngRepeat: language in group.languages track by $index -->
+                        <li ng-repeat="language in group.languages track by $index" class="ng-scope">
+                            <a ng-href="/jp.html?intcmp=selector-jp" class="ng-binding"
+                               href="/jp.html?intcmp=selector-jp">Japanese</a>
+                        </li>
+                        <!-- end ngRepeat: language in group.languages track by $index -->
+                    </ul>
+                    <!-- end ngRepeat: group in groups.group track by $index -->
+                </div>
+                <!-- end ngRepeat: groups in regions track by $index -->
+            </div>
+        </div>
+        <a ng-href="https://profile.ca.com/us/register/login.aspx?returnURL=https://www.ca.com/us/trials.html?intcmp=util_nav"
+           ng-hide="sso" class="header__utility-item icon-size-alt icon-profile ng-binding ng-hide"
+           href="https://profile.ca.com/us/register/login.aspx?returnURL=https://www.ca.com/us/trials.html?intcmp=util_nav">Sign
+            In</a>
+        <div class="header__utility-item icon-size-alt icon-profile" ng-show="sso">
+            <a ng-href="https://profile.ca.com/us/register/login.aspx?returnURL=https://www.ca.com/us/trials.html?intcmp=util_nav"
+               popover="" popover-template="account" popover-trigger="click" popover-placement="bottom|center"
+               popover-timeout="1" popover-theme="header__utility-popover header__utility-popover-account"
+               class="header__utility-selected ng-scope ng-binding"
+               href="https://profile.ca.com/us/register/login.aspx?returnURL=https://www.ca.com/us/trials.html?intcmp=util_nav">My
+                Profile</a>
+            <div id="popover-2"
+                 class="header__utility-popover header__utility-popover-account popover-bottom-placement popover-center-align ng-scope"
+                 style="display: none;">
+                <div class="dropdown">
+                    <ul>
+                        <!-- ngRepeat: item in account.links -->
+                        <li ng-repeat="item in account.links" class="ng-scope">
+                            <a ng-href="https://profile.ca.com/us/register/logout.aspx?returnURL=https://www.ca.com/us/trials.html?intcmp=util_nav"
+                               ng-bind-html="item.title" class="ng-binding"
+                               href="https://profile.ca.com/us/register/logout.aspx?returnURL=https://www.ca.com/us/trials.html?intcmp=util_nav">Sign
+                                Out</a>
+                        </li>
+                        <!-- end ngRepeat: item in account.links -->
+                        <li ng-repeat="item in account.links" class="ng-scope">
+                            <a ng-href="https://profile.ca.com/us/register/updateprofile.aspx?returnURL=https://www.ca.com/us/trials.html?intcmp=util_nav"
+                               ng-bind-html="item.title" class="ng-binding"
+                               href="https://profile.ca.com/us/register/updateprofile.aspx?returnURL=https://www.ca.com/us/trials.html?intcmp=util_nav">My
+                                Profile</a>
+                        </li>
+                        <!-- end ngRepeat: item in account.links -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <a class="header__utility-item icon-search ng-binding"
+           ng-class="search ? 'icon-close-alt icon-size-alt active':'icon-search'" ng-click="toggleSearch(search)">
+            Search
+        </a>
+    </div>
+    <a ng-href="/us.html" href="/us.html"></a>
+    <a ng-href="/de.html" href="/de.html"></a>
+    <a ng-href="/it.html" href="/it.html"></a>
+    <a ng-href="/fr.html" href="/fr.html"></a>
+    <a ng-href="/es.html" href="/es.html"></a>
+    <a ng-href="/ar.html" href="/ar.html"></a>
+    <a ng-href="/br.html" href="/br.html"></a>
+    <a ng-href="/kr.html" href="/kr.html"></a>
+    <a ng-href="/tw.html" href="/tw.html"></a>
+    <a ng-href="/cn.html" href="/cn.html"></a>
+    <a ng-href="/gb.html" href="/gb.html"></a>
+    <a ng-href="/au.html" href="/au.html"></a>
+</div>
+<div class="header__container">
+    <!--<a ng-href="/us.html" class="header__logo icon-logo" href="/us.html"></a>-->
+    <img src="img/ca_logo.svg" class="header__logo icon-logo">
+    <!-- ngInclude: 'navigation.html' -->
+    <div ng-include="'navigation.html'" class="ng-scope">
+        <ul class="header__navigation ng-scope navigation-inactive"
+            ng-class="navigationState ? 'navigation-active' : 'navigation-inactive'">
+            <!-- ngRepeat: section in navigation -->
+            <li ng-repeat="section in navigation" ng-mouseenter="toggleDropdown(false, section, navigation, account)"
+                ng-mouseleave="toggleDropdown(true, section, navigation, account)" class="ng-scope">
+                <a ng-bind-html="section.title" ng-href="https://www.ca.com/us/products.html?intcmp=headernav"
+                   ng-class="section.active ? 'active' : ''"
+                   ng-click="toggleDropdown(section.active, section, navigation, account)" class="ng-binding"
+                   href="https://www.ca.com/us/products.html?intcmp=headernav">Products</a>
+                <i class="header__icon-control icon-expand-alt"
+                   ng-class="section.active ? 'icon-collapse-alt' : 'icon-expand-alt'"></i>
+            </li>
+            <li ng-repeat="section in navigation" ng-mouseenter="toggleDropdown(false, section, navigation, account)"
+                ng-mouseleave="toggleDropdown(true, section, navigation, account)" class="ng-scope">
+                <a ng-bind-html="section.title" ng-href="https://www.ca.com/us/why-ca.html?intcmp=headernav"
+                   ng-class="section.active ? 'active' : ''"
+                   ng-click="toggleDropdown(section.active, section, navigation, account)" class="ng-binding"
+                   href="https://www.ca.com/us/why-ca.html?intcmp=headernav">Solutions</a>
+                <i class="header__icon-control icon-expand-alt"
+                   ng-class="section.active ? 'icon-collapse-alt' : 'icon-expand-alt'"></i>
+            </li>
+            <!-- end ngRepeat: section in navigation -->
+            <li ng-repeat="section in navigation" ng-mouseenter="toggleDropdown(false, section, navigation, account)"
+                ng-mouseleave="toggleDropdown(true, section, navigation, account)" class="ng-scope">
+                <a ng-bind-html="section.title" ng-href="https://www.ca.com/us/education-training.html?intcmp=headernav"
+                   ng-class="section.active ? 'active' : ''"
+                   ng-click="toggleDropdown(section.active, section, navigation, account)" class="ng-binding"
+                   href="https://www.ca.com/us/education-training.html?intcmp=headernav">Education &amp; Training</a>
+                <i class="header__icon-control icon-expand-alt"
+                   ng-class="section.active ? 'icon-collapse-alt' : 'icon-expand-alt'"></i>
+            </li>
+            <!-- end ngRepeat: section in navigation -->
+            <li ng-repeat="section in navigation" ng-mouseenter="toggleDropdown(false, section, navigation, account)"
+                ng-mouseleave="toggleDropdown(true, section, navigation, account)" class="ng-scope">
+                <a ng-bind-html="section.title" ng-href="https://www.ca.com/us/services-support.html?intcmp=headernav"
+                   ng-class="section.active ? 'active' : ''"
+                   ng-click="toggleDropdown(section.active, section, navigation, account)" class="ng-binding"
+                   href="https://www.ca.com/us/services-support.html?intcmp=headernav">Services &amp; Support</a>
+                <i class="header__icon-control icon-expand-alt"
+                   ng-class="section.active ? 'icon-collapse-alt' : 'icon-expand-alt'"></i>
+            </li>
+            <!-- end ngRepeat: section in navigation -->
+            <li ng-repeat="section in navigation" ng-mouseenter="toggleDropdown(false, section, navigation, account)"
+                ng-mouseleave="toggleDropdown(true, section, navigation, account)" class="ng-scope">
+                <a ng-bind-html="section.title" ng-href="https://www.ca.com/us/partners.html?intcmp=headernav"
+                   ng-class="section.active ? 'active' : ''"
+                   ng-click="toggleDropdown(section.active, section, navigation, account)" class="ng-binding"
+                   href="https://www.ca.com/us/partners.html?intcmp=headernav">Partners</a>
+                <i class="header__icon-control icon-expand-alt"
+                   ng-class="section.active ? 'icon-collapse-alt' : 'icon-expand-alt'"></i>
+            </li>
+            <!-- end ngRepeat: section in navigation -->
+            <li ng-repeat="section in navigation" ng-mouseenter="toggleDropdown(false, section, navigation, account)"
+                ng-mouseleave="toggleDropdown(true, section, navigation, account)" class="ng-scope">
+                <a ng-bind-html="section.title" ng-href="https://www.ca.com/us/company.html?intcmp=headernav"
+                   ng-class="section.active ? 'active' : ''"
+                   ng-click="toggleDropdown(section.active, section, navigation, account)" class="ng-binding"
+                   href="https://www.ca.com/us/company.html?intcmp=headernav">Company</a>
+                <i class="header__icon-control icon-expand-alt"
+                   ng-class="section.active ? 'icon-collapse-alt' : 'icon-expand-alt'"></i>
+            </li>
+            <!-- end ngRepeat: section in navigation -->
+        </ul>
+    </div>
+    <span class="header__menu icon-hamburger" ng-class="navigationState ? ' icon-close' : ' icon-hamburger'"
+          ng-click="toggleMenu();"></span>
+    <span class="header__search-link icon-search ng-binding" ng-class="search ? 'icon-close-alt active':'icon-search'"
+          ng-click="toggleSearch(search);">
+         Search
+         </span>
+    <!-- ngIf: emailModulePresent --><span class="header__contact email ng-scope" ng-if="emailModulePresent"
+                                           ng-click="toggleEmail()">
+         <i class="contact-icon icon-email" ng-class="emailModuleVisible ? 'icon-email-alt' : 'icon-email'"></i>
+         </span><!-- end ngIf: emailModulePresent -->
+    <!-- ngIf: contactModulePresent --><span class="header__contact ng-scope" ng-if="contactModulePresent"
+                                             ng-click="toggleContact()">
+         <i class="contact-icon phone icon-phone"
+            ng-class="contactModuleVisible ? 'icon-phone-alt' : 'icon-phone'"></i>
+         </span><!-- end ngIf: contactModulePresent -->
+    <!-- ngIf: chatModulePresent --><span class="header__contact chat ng-scope" ng-if="chatModulePresent"
+                                          ng-click="toggleChat()">
+         <i class="contact-icon icon-chat" ng-class="chatModuleVisible ? 'icon-chat-alt' : 'icon-chat'"></i>
+         </span><!-- end ngIf: chatModulePresent -->
+    <!-- search overlay -->
+    <div class="header__search hide" ng-class="search ? 'show' : 'hide'">
+        <div class="header__search-inner">
+            <div class="search-input">
+                <i class="search-icon icon-search-alt"></i>
+                <input ng-model="q.Name" type="text" class="search-input-field ng-pristine ng-untouched ng-valid"
+                       placeholder="What are you looking for?" on-enter="generateSearchLink(q.Name, 'en_US', true)"
+                       focus-on="search">
+                <div class="search-input-button"><i class="icon-search-white"></i></div>
+                <i class="search-icon-close icon-close" ng-click="closeSearch()"></i>
+            </div>
+            <div class="search-results">
+                <!-- ngIf: solutionResults.length > 0 -->
+                <ul ng-show="solutionResults.length > 0" class="section-results ng-hide">
+                    <!-- ngRepeat: item in searchItems | filter:{Type : 'Solution'} | searchFilter:q.Name | filter:q | limitTo: 10 as solutionResults -->
+                </ul>
+                <!-- ngIf: productResults.length > 0 -->
+                <ul ng-show="productResults.length > 0" class="section-results ng-hide">
+                    <!-- ngRepeat: item in searchItems | filter:{Type : 'Product'} | searchFilter: q.Name  | filter:q | limitTo: 10 as productResults -->
+                </ul>
+                <!-- ngIf: resourceResults.length > 0 -->
+                <ul ng-show="resourceResults.length > 0" class="section-results ng-hide">
+                    <!-- ngRepeat: item in searchItems | filter:{Type : 'Resource'} | searchFilter: q.Name  | filter:q | limitTo: 10 as resourceResults -->
+                </ul>
+                <!-- ngIf: solutionResults.length + productResults.length + resourceResults.length > 0 -->
+                <!-- ngIf: q.Name!='undefined' --><a ng-href="" class="all-results cta2 ng-binding ng-scope"
+                                                     ng-if="q.Name!='undefined'"
+                                                     ng-mouseenter="generateSearchLink(q.Name, 'en_US', false)">Full
+                site search&nbsp;&gt;</a><!-- end ngIf: q.Name!='undefined' -->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="bgimg">
+    <div class="span-10 offset-1 omega-1" style="padding-top: 20px">
+        <div>
+            <div class="text section">
+                <div class="text-comp font-white">
+                    <h1 style="text-align: center; color: white">CA World ’17 has ended, but it’s not over.</h1>
+                    <h3 style="text-align: center; color: white"><b>Watch replays of the CA World ’17 keynotes.</b></h3>
+                </div>
+            </div>
+            <div class="text section" style="margin-top: 50px">
+                <figure>
+                    <img src="img/mike.jpg">
+                    <figcaption style="color: white"> Mike Gregoire, CEOt</figcaption>
+                </figure>
+                <figure>
+                    <img src="img/otto.jpg">
+                    <figcaption style="color: white"> Otto Berkes, CTO</figcaption>
+                </figure>
+                <figure>
+                    <img src="img/ayman.jpg">
+                    <figcaption style="color: white"> Ayman Sayed, CPO</figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="background-style parbase section">
+    <div ng-controller="bgstyleController">
+        <div id=""
+             class="background-style background-style--image  background-style--padding-top-40 background-style--padding-right-20 background-style--padding-bottom-70 background-style--padding-left-20     "
+             style="background-image:url('img/hero.jpg'); height: 500px;">
+            <div class="background-style-par parsys">
+                <div class="flexible-columns parbase section">
+                    <div class="flexible-column">
+                        <div class="span-7 offset-0 omega-1">
+                            <div>
+                                <div class="text section">
+                                    <div class="text-comp font-white">
+                                        <h2>You need a Modern Software Factory. We’ll help you build it.</h2>
+                                    </div>
+                                </div>
+                                <div class="flexible-columns parbase section">
+                                    <div class="flexible-column">
+                                        <div class="span-4 offset-0 omega-3">
+                                            <div>
+                                                <div class="calltoaction section">
+                                                    <div style="text-align:left">
+                                                        <div class="call-to-action call-align">
+                                                            <a href="https://www.ca.com/us/why-ca/security.html?intcmp=hp_hero"
+                                                               class="button__default button--prim2 ">
+                                                                Embed Security</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="span-4 offset-0 omega-3">
+                                            <div>
+                                                <div class="calltoaction section">
+                                                    <div style="text-align:left">
+                                                        <div class="call-to-action call-align">
+                                                            <a href="https://www.ca.com/us/why-ca/devops.html?intcmp=hp_hero"
+                                                               class="button__default button--prim2 ">
+                                                                Accelerate DevOps</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="span-4 offset-0 omega-3">
+                                            <div>
+                                                <div class="calltoaction section">
+                                                    <div style="text-align:left">
+                                                        <div class="call-to-action call-align">
+                                                            <a href="https://www.ca.com/us/why-ca/agile-management.html?intcmp=hp_hero"
+                                                               class="button__default button--prim2 ">
+                                                                Ensure Agility</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="bgFreeTrial" id="freeTrialDiv">
+    <div class="span-10 offset-1 omega-1" style="padding-top: 20px">
+        <div>
+            <div class="text section">
+                <div class="text-comp font-white">
+                    <h1 style="text-align: center; color: white">Free Trials.</h1>
+                    <h3 style="text-align: center; color: white"><b>Optimize your application lifecycle. Try CA.</b>
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="background-style parbase section">
+    <div ng-controller="bgstyleController" class="ng-scope">
+        <div id=""
+             class="background-style  background-style--white  background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20    ">
+            <div class="background-style-par parsys">
+                <div class="text section">
+                    <div class="text-comp font-black">
+                        <h3 style="text-align: center;">Get a look at CA Technologies portfolio of solutions to manage
+                            your entire application lifecycle.
+                        </h3>
+                    </div>
+                </div>
+                <div class="structure-two-columns section">
+                    <div class="two-columns">
+                        <div class="two-columns__container ">
+                            <div class="two-columns__column   50/50">
+                                <div>
+                                    <div class="structure-three-columns section">
+                                        <div class="three-columns">
+                                            <div class="three-columns__container ">
+                                                <div class="three-columns__column ">
+                                                    <div>
+                                                        <div class="calltoaction section">
+                                                            <div style="text-align:center">
+                                                                <div class="call-to-action call-align">
+                                                                    <a href="#1" class="button__link ">
+                                                                        Plan&nbsp;&gt;</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="three-columns__column ">
+                                                    <div>
+                                                        <div class="calltoaction section">
+                                                            <div style="text-align:center">
+                                                                <div class="call-to-action call-align">
+                                                                    <a href="#2" class="button__link ">
+                                                                        Build&nbsp;&gt;</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="three-columns__column ">
+                                                    <div>
+                                                        <div class="calltoaction section">
+                                                            <div style="text-align:center">
+                                                                <div class="call-to-action call-align">
+                                                                    <a href="#3" class="button__link ">
+                                                                        Test&nbsp;&gt;</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="two-columns__column   50/50">
+                                <div>
+                                    <div class="structure-three-columns section">
+                                        <div class="three-columns">
+                                            <div class="three-columns__container ">
+                                                <div class="three-columns__column ">
+                                                    <div>
+                                                        <div class="calltoaction section">
+                                                            <div style="text-align:center">
+                                                                <div class="call-to-action call-align">
+                                                                    <a href="#4" class="button__link ">
+                                                                        Release&nbsp;&gt;</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="three-columns__column ">
+                                                    <div>
+                                                        <div class="calltoaction section">
+                                                            <div style="text-align:center">
+                                                                <div class="call-to-action call-align">
+                                                                    <a href="#5" class="button__link ">
+                                                                        Operate&nbsp;&gt;</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="three-columns__column ">
+                                                    <div>
+                                                        <div class="calltoaction section">
+                                                            <div style="text-align:center">
+                                                                <div class="call-to-action call-align">
+                                                                    <a href="#6" class="button__link ">
+                                                                        Secure&nbsp;&gt;</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--<div class="container">-->
+<!--<div class="row">-->
+<!--<div class="col-md-6">-->
+<!--<div class="card">-->
+<!--<img src="img/ca-ppm.PNG" alt="CA PPM" style="width:100%">-->
+<!--<div class="card-container">-->
+<!--<h4><b>PPM New UI</b></h4>-->
+<!--<p>All new Project and Portfolio management.</p>-->
+<!--<a href="/authenticate" class="btn btn-primary btn-md active" role="button">Free Trial</a>-->
+<!--<button type="button" class="btn btn-info">Learn More</button>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="col-md-6">-->
+<!--<div class="card">-->
+<!--<img src="img/apim.png" alt="API Management" style="width:100%">-->
+<!--<div class="card-container">-->
+<!--<h4><b>API Management</b></h4>-->
+<!--<p>Create flexible architectures with microservices and manage, integrate and secure your-->
+<!--APIs at scale.</p>-->
+<!--<button type="button" class="btn btn-primary">Free Trial</button>-->
+<!--<button type="button" class="btn btn-info">Learn More</button>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<div class="background-style parbase section">
+    <div ng-controller="bgstyleController" class="ng-scope">
+        <div id=""
+             class="background-style  background-style--medium-grey-blue background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-40 background-style--padding-left-20    ">
+            <div class="background-style-par parsys">
+                <div class="marketo-rtp-promo section">
+                    <div id="rtp-promo-content-cacom-en_us-trials">
+                    </div>
+                </div>
+                <div class="structure-one-column section">
+                    <div class="one-column">
+                        <div class="one-column__container ">
+                            <div>
+                                <div class="text section">
+                                    <div class="text-comp font-black">
+                                        <h2><a name="1"></a>Plan</h2>
+                                    </div>
+                                </div>
+                                <div class="structure-three-columns section">
+                                    <div class="three-columns">
+                                        <div class="three-columns__container  ng-scope" dynamic-height="true">
+                                            <div class="three-columns__column ">
+                                                <div>
+                                                    <div class="background-style parbase section">
+                                                        <div ng-controller="bgstyleController" class="ng-scope">
+                                                            <div id=""
+                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-30 "
+                                                                 dynamic-height-item="" ng-style="dynamicStyle"
+                                                                 style="min-height: 271px;">
+                                                                <div class="background-style-par parsys">
+                                                                    <div class="text section">
+                                                                        <div class="text-comp font-black">
+                                                                            <h3><b>CA Clarity PPM</b></h3>
+                                                                            <p>CA PPM represents a single platform that
+                                                                                enables you to manage your entire
+                                                                                innovation lifecycle and make more
+                                                                                informed strategic investments.
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="calltoaction section">
+                                                                        <div style="text-align:left">
+                                                                            <!--<div class="call-to-action">-->
+                                                                                <!--<a href="#"-->
+                                                                                   <!--class="button__default "-->
+                                                                                <!--&gt;-->
+                                                                                    <!--Free Trial</a>-->
+                                                                                <!--<a href="https://www.ca.com/us/products/ca-project-portfolio-management.html#"-->
+                                                                                   <!--target="_blank"-->
+                                                                                   <!--class="button__outline ">-->
+                                                                                    <!--Watch Demo</a>-->
+                                                                            <!--</div>-->
+                                                                            <div class="call-to-action">
+                                                                                <button id="freeTrial" class="loginBtn loginBtn--google">
+                                                                                    Login with Google
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="background-style parbase section">
+                                                                        <div ng-controller="bgstyleController"
+                                                                             class="ng-scope">
+                                                                            <div id=""
+                                                                                 class="background-style  White background-style--padding-top-10       ">
+                                                                                <div class="background-style-par parsys">
+                                                                                    <div class="calltoaction section">
+                                                                                        <div style="text-align:left">
+                                                                                            <div class="call-to-action call-align">
+                                                                                                <a href="https://www.ca.com/us/products/ca-agile-central.html"
+                                                                                                   class="button__link button__link-normal ">
+                                                                                                    Learn more about CA
+                                                                                                    Clarity PPM&nbsp;&gt;</a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="three-columns__column ">
+                                                <div>
+                                                    <div class="background-style parbase section">
+                                                        <div ng-controller="bgstyleController" class="ng-scope">
+                                                            <div id=""
+                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-30 "
+                                                                 dynamic-height-item="" ng-style="dynamicStyle"
+                                                                 style="min-height: 271px;">
+                                                                <div class="background-style-par parsys">
+                                                                    <div class="text section">
+                                                                        <div class="text-comp font-black">
+                                                                            <h3><b>CA Agile Central</b></h3>
+                                                                            <p>Build and deliver the right software with
+                                                                                speed, quality and efficiency with a
+                                                                                platform built for scaling agile.
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="calltoaction section">
+                                                                        <div style="text-align:left">
+                                                                            <div class="call-to-action call-align">
+                                                                                <a href="https://www.ca.com/us/trials/ca-agile-central-unlimited-edition.html"
+                                                                                   class="button__default ">
+                                                                                    Free Trial</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="background-style parbase section">
+                                                                        <div ng-controller="bgstyleController"
+                                                                             class="ng-scope">
+                                                                            <div id=""
+                                                                                 class="background-style  White background-style--padding-top-10       ">
+                                                                                <div class="background-style-par parsys">
+                                                                                    <div class="calltoaction section">
+                                                                                        <div style="text-align:left">
+                                                                                            <div class="call-to-action call-align">
+                                                                                                <a href="https://www.ca.com/us/products/ca-agile-central.html"
+                                                                                                   class="button__link button__link-normal ">
+                                                                                                    Learn more about CA
+                                                                                                    Agile Central&nbsp;&gt;</a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="three-columns__column ">
+                                                <div>
+                                                    <div class="background-style parbase section">
+                                                        <div ng-controller="bgstyleController" class="ng-scope">
+                                                            <div id=""
+                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-20 "
+                                                                 dynamic-height-item="" ng-style="dynamicStyle"
+                                                                 style="min-height: 271px;">
+                                                                <div class="background-style-par parsys">
+                                                                    <div class="text section">
+                                                                        <div class="text-comp font-black">
+                                                                            <h3><b>CA Flowdock</b></h3>
+                                                                            <p>Purposeful collaboration: A chat and
+                                                                                integration workspace for
+                                                                                teams.&#8203;<br>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="calltoaction section">
+                                                                        <div style="text-align:left">
+                                                                            <div class="call-to-action">
+                                                                                <a href="https://www.flowdock.com/"
+                                                                                   class="button__default "
+                                                                                   target="_blank">
+                                                                                    Free Trial</a>
+                                                                            </div>
+                                                                            <div class="call-to-action">
+                                                                                <a href="https://www.ca.com/us/collateral/videos/introduction-to-flowdock.html"
+                                                                                   class="button__outline ">
+                                                                                    Watch Demo</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="background-style parbase section">
+                                                                        <div ng-controller="bgstyleController"
+                                                                             class="ng-scope">
+                                                                            <div id=""
+                                                                                 class="background-style  White background-style--padding-top-10  background-style--padding-bottom-10     ">
+                                                                                <div class="background-style-par parsys">
+                                                                                    <div class="calltoaction section">
+                                                                                        <div style="text-align:left">
+                                                                                            <div class="call-to-action call-align">
+                                                                                                <a href="https://www.ca.com/us/products/ca-flowdock.html"
+                                                                                                   class="button__link button__link-normal ">
+                                                                                                    Learn more about CA
+                                                                                                    Flowdock&nbsp;&gt;</a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="three-columns__column ">
+                                                <div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="structure-one-column section">
+                                    <div class="one-column">
+                                        <div class="one-column__container ">
+                                            <div>
+                                                <div class="text section">
+                                                    <div class="text-comp font-black">
+                                                        <h2><a name="2"></a>Build</h2>
+                                                    </div>
+                                                </div>
+                                                <div class="structure-three-columns section">
+                                                    <div class="three-columns">
+                                                        <div class="three-columns__container  ng-scope"
+                                                             dynamic-height="true">
+                                                            <div class="three-columns__column ">
+                                                                <div>
+                                                                    <div class="background-style parbase section">
+                                                                        <div ng-controller="bgstyleController"
+                                                                             class="ng-scope">
+                                                                            <div id=""
+                                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-20 "
+                                                                                 dynamic-height-item=""
+                                                                                 ng-style="dynamicStyle"
+                                                                                 style="min-height: 249px;">
+                                                                                <div class="background-style-par parsys">
+                                                                                    <div class="text section">
+                                                                                        <div class="text-comp font-slate-blue">
+                                                                                            <h3><b>CA Live API
+                                                                                                Creator</b>
+                                                                                            </h3>
+                                                                                            <p>Instantly create
+                                                                                                enterprise-class APIs
+                                                                                                and microservices.
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="calltoaction section">
+                                                                                        <div style="text-align:left">
+                                                                                            <div class="call-to-action call-align">
+                                                                                                <a href="https://www.ca.com/us/trials/ca-live-api-creator.html"
+                                                                                                   class="button__default ">
+                                                                                                    Free Trial</a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="background-style parbase section">
+                                                                                        <div ng-controller="bgstyleController"
+                                                                                             class="ng-scope">
+                                                                                            <div id=""
+                                                                                                 class="background-style  White background-style--padding-top-10       ">
+                                                                                                <div class="background-style-par parsys">
+                                                                                                    <div class="calltoaction section">
+                                                                                                        <div style="text-align:left">
+                                                                                                            <div class="call-to-action call-align">
+                                                                                                                <a href="https://www.ca.com/us/products/ca-live-api-creator.html"
+                                                                                                                   class="button__link button__link-normal ">
+                                                                                                                    Learn
+                                                                                                                    more
+                                                                                                                    about
+                                                                                                                    CA
+                                                                                                                    Live
+                                                                                                                    API
+                                                                                                                    Creator&nbsp;&gt;</a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="three-columns__column ">
+                                                                <div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="three-columns__column ">
+                                                                <div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="structure-one-column section">
+                    <div class="one-column">
+                        <div class="one-column__container ">
+                            <div>
+                                <div class="text section">
+                                    <div class="text-comp font-black">
+                                        <h2><a name="3"></a>Test</h2>
+                                    </div>
+                                </div>
+                                <div class="structure-three-columns section">
+                                    <div class="three-columns">
+                                        <div class="three-columns__container  ng-scope" dynamic-height="true">
+                                            <div class="three-columns__column ">
+                                                <div>
+                                                    <div class="background-style parbase section">
+                                                        <div ng-controller="bgstyleController" class="ng-scope">
+                                                            <div id=""
+                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-20 "
+                                                                 dynamic-height-item="" ng-style="dynamicStyle"
+                                                                 style="min-height: 296px;">
+                                                                <div class="background-style-par parsys">
+                                                                    <div class="text section">
+                                                                        <div class="text-comp font-black">
+                                                                            <h3><b>CA Agile Requirements Designer</b>
+                                                                            </h3>
+                                                                            <p>Improve software quality, reduce testing
+                                                                                costs and speed up application
+                                                                                delivery.
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="calltoaction section">
+                                                                        <div style="text-align:left">
+                                                                            <div class="call-to-action call-align">
+                                                                                <a href="https://www.ca.com/us/trials/ca-agile-requirements-designer.html"
+                                                                                   class="button__default ">
+                                                                                    Free Trial</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="background-style parbase section">
+                                                                        <div ng-controller="bgstyleController"
+                                                                             class="ng-scope">
+                                                                            <div id=""
+                                                                                 class="background-style  background-style--white background-style--padding-top-10       ">
+                                                                                <div class="background-style-par parsys">
+                                                                                    <div class="calltoaction section">
+                                                                                        <div style="text-align:left">
+                                                                                            <div class="call-to-action call-align">
+                                                                                                <a href="https://www.ca.com/us/products/ca-agile-requirements-designer.html"
+                                                                                                   class="button__link button__link-normal ">
+                                                                                                    Learn more about CA
+                                                                                                    Agile Requirements
+                                                                                                    Designer&nbsp;&gt;</a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="three-columns__column ">
+                                                <div>
+                                                    <div class="background-style parbase section">
+                                                        <div ng-controller="bgstyleController" class="ng-scope">
+                                                            <div id=""
+                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-30 "
+                                                                 dynamic-height-item="" ng-style="dynamicStyle"
+                                                                 style="min-height: 296px;">
+                                                                <div class="background-style-par parsys">
+                                                                    <div class="text section">
+                                                                        <div class="text-comp font-black">
+                                                                            <h3>CA Service Virtualization Community
+                                                                                Edition
+                                                                            </h3>
+                                                                            <p>Quickly adopt service virtualization to
+                                                                                accelerate your agile testing.&nbsp;
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="calltoaction section">
+                                                                        <div style="text-align:left">
+                                                                            <div class="call-to-action call-align">
+                                                                                <a href="https://www.ca.com/us/trials/ca-service-virtualization-community-edition.html"
+                                                                                   class="button__default "
+                                                                                   target="_blank">
+                                                                                    Free Trial</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="background-style parbase section">
+                                                                        <div ng-controller="bgstyleController"
+                                                                             class="ng-scope">
+                                                                            <div id=""
+                                                                                 class="background-style  White background-style--padding-top-10       ">
+                                                                                <div class="background-style-par parsys">
+                                                                                    <div class="calltoaction section">
+                                                                                        <div style="text-align:left">
+                                                                                            <div class="call-to-action call-align">
+                                                                                                <a href="https://www.ca.com/us/products/mock-api.html"
+                                                                                                   class="button__link button__link-normal "
+                                                                                                   target="_blank">
+                                                                                                    Learn more about CA
+                                                                                                    Service
+                                                                                                    Virtualization
+                                                                                                    Community Edition&nbsp;&gt;</a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="three-columns__column ">
+                                                <div>
+                                                    <div class="background-style parbase section">
+                                                        <div ng-controller="bgstyleController" class="ng-scope">
+                                                            <div id=""
+                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-20 "
+                                                                 dynamic-height-item="" ng-style="dynamicStyle"
+                                                                 style="min-height: 296px;">
+                                                                <div class="background-style-par parsys">
+                                                                    <div class="text section">
+                                                                        <div class="text-comp font-black">
+                                                                            <h3><b>CA BlazeMeter</b></h3>
+                                                                            <p>Test for performance earlier in your SDLC
+                                                                                through to production with a
+                                                                                next-generation SaaS and on-premises
+                                                                                solution.
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="calltoaction section">
+                                                                        <div style="text-align:left">
+                                                                            <div class="call-to-action call-align">
+                                                                                <a href="https://www.blazemeter.com?utm_source=CA&amp;utm_medium=solutions&amp;utm_campaign=freetrial"
+                                                                                   class="button__default "
+                                                                                   target="_blank">
+                                                                                    Free Trial</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="background-style parbase section">
+                                                                        <div ng-controller="bgstyleController"
+                                                                             class="ng-scope">
+                                                                            <div id=""
+                                                                                 class="background-style  background-style--white background-style--padding-top-10       ">
+                                                                                <div class="background-style-par parsys">
+                                                                                    <div class="calltoaction section">
+                                                                                        <div style="text-align:left">
+                                                                                            <div class="call-to-action call-align">
+                                                                                                <a href="https://www.blazemeter.com/features"
+                                                                                                   class="button__link button__link-normal "
+                                                                                                   target="_blank">
+                                                                                                    Learn more about CA
+                                                                                                    BlazeMeter&nbsp;&gt;</a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="structure-one-column section">
+                                    <div class="one-column">
+                                        <div class="one-column__container ">
+                                            <div>
+                                                <div class="text section">
+                                                    <div class="text-comp font-black">
+                                                        <h2><a name="4"></a>Release</h2>
+                                                    </div>
+                                                </div>
+                                                <div class="structure-three-columns section">
+                                                    <div class="three-columns">
+                                                        <div class="three-columns__container  ng-scope"
+                                                             dynamic-height="true">
+                                                            <div class="three-columns__column ">
+                                                                <div>
+                                                                    <div class="background-style parbase section">
+                                                                        <div ng-controller="bgstyleController"
+                                                                             class="ng-scope">
+                                                                            <div id=""
+                                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-30 "
+                                                                                 dynamic-height-item=""
+                                                                                 ng-style="dynamicStyle"
+                                                                                 style="min-height: 362px;">
+                                                                                <div class="background-style-par parsys">
+                                                                                    <div class="text section">
+                                                                                        <div class="text-comp font-black">
+                                                                                            <h3>CA Automic Release
+                                                                                                Automation
+                                                                                            </h3>
+                                                                                            <p>Orchestrate your devops
+                                                                                                toolchain and automate
+                                                                                                deployments. Deliver
+                                                                                                application-ready
+                                                                                                infrastructures and
+                                                                                                achieve continuous
+                                                                                                delivery across dev,
+                                                                                                test and production.
+                                                                                                Automate everything.
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="calltoaction section">
+                                                                                        <div style="text-align:left">
+                                                                                            <div class="call-to-action call-align">
+                                                                                                <a href="https://offers.automic.com/preview-the-possible?preview_interests=Release%20Automation"
+                                                                                                   class="button__default "
+                                                                                                   target="_blank">
+                                                                                                    Free Trial</a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="background-style parbase section">
+                                                                                        <div ng-controller="bgstyleController"
+                                                                                             class="ng-scope">
+                                                                                            <div id=""
+                                                                                                 class="background-style  White background-style--padding-top-10       ">
+                                                                                                <div class="background-style-par parsys">
+                                                                                                    <div class="calltoaction section">
+                                                                                                        <div style="text-align:left">
+                                                                                                            <div class="call-to-action call-align">
+                                                                                                                <a href="https://automic.com/application-performance-management"
+                                                                                                                   class="button__link button__link-normal "
+                                                                                                                   target="_blank">
+                                                                                                                    Learn
+                                                                                                                    more
+                                                                                                                    about
+                                                                                                                    CA
+                                                                                                                    Automic
+                                                                                                                    Release
+                                                                                                                    Automation&nbsp;&gt;</a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="three-columns__column ">
+                                                                <div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="three-columns__column ">
+                                                                <div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="structure-one-column section">
+                                                    <div class="one-column">
+                                                        <div class="one-column__container ">
+                                                            <div>
+                                                                <div class="text section">
+                                                                    <div class="text-comp font-black">
+                                                                        <h2><a name="5"></a>Operate</h2>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="structure-three-columns section">
+                                                                    <div class="three-columns">
+                                                                        <div class="three-columns__container  ng-scope"
+                                                                             dynamic-height="true">
+                                                                            <div class="three-columns__column ">
+                                                                                <div>
+                                                                                    <div class="background-style parbase section">
+                                                                                        <div ng-controller="bgstyleController"
+                                                                                             class="ng-scope">
+                                                                                            <div id=""
+                                                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-30 "
+                                                                                                 dynamic-height-item=""
+                                                                                                 ng-style="dynamicStyle"
+                                                                                                 style="min-height: 287px;">
+                                                                                                <div class="background-style-par parsys">
+                                                                                                    <div class="text section">
+                                                                                                        <div class="text-comp font-black">
+                                                                                                            <h3><b>CA
+                                                                                                                API
+                                                                                                                Management</b>
+                                                                                                            </h3>
+                                                                                                            <p>Publish
+                                                                                                                secure,
+                                                                                                                scalable
+                                                                                                                APIs
+                                                                                                                with an
+                                                                                                                industry-leading
+                                                                                                                API
+                                                                                                                Management
+                                                                                                                solution.
+                                                                                                            </p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="calltoaction section">
+                                                                                                        <div style="text-align:left">
+                                                                                                            <div class="call-to-action call-align">
+                                                                                                                <a href="http://transform.ca.com/API-Management-Trial.html"
+                                                                                                                   class="button__default "
+                                                                                                                   target="_blank">
+                                                                                                                    Free
+                                                                                                                    Trial</a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="background-style parbase section">
+                                                                                                        <div ng-controller="bgstyleController"
+                                                                                                             class="ng-scope">
+                                                                                                            <div id=""
+                                                                                                                 class="background-style  White background-style--padding-top-10       ">
+                                                                                                                <div class="background-style-par parsys">
+                                                                                                                    <div class="calltoaction section">
+                                                                                                                        <div style="text-align:left">
+                                                                                                                            <div class="call-to-action call-align">
+                                                                                                                                <a href="https://www.ca.com/us/products/api-management.html"
+                                                                                                                                   class="button__link button__link-normal ">
+                                                                                                                                    Learn
+                                                                                                                                    more
+                                                                                                                                    about
+                                                                                                                                    CA
+                                                                                                                                    API
+                                                                                                                                    Management&nbsp;&gt;</a>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="three-columns__column ">
+                                                                                <div>
+                                                                                    <div class="background-style parbase section">
+                                                                                        <div ng-controller="bgstyleController"
+                                                                                             class="ng-scope">
+                                                                                            <div id=""
+                                                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-30 "
+                                                                                                 dynamic-height-item=""
+                                                                                                 ng-style="dynamicStyle"
+                                                                                                 style="min-height: 287px;">
+                                                                                                <div class="background-style-par parsys">
+                                                                                                    <div class="text section">
+                                                                                                        <div class="text-comp font-black">
+                                                                                                            <h3><b>CA
+                                                                                                                Application
+                                                                                                                Performance
+                                                                                                                Management</b>
+                                                                                                            </h3>
+                                                                                                            <p>Delight
+                                                                                                                users,
+                                                                                                                differentiate
+                                                                                                                your
+                                                                                                                business
+                                                                                                                and
+                                                                                                                protect
+                                                                                                                your
+                                                                                                                experts.
+                                                                                                            </p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="calltoaction section">
+                                                                                                        <div style="text-align:left">
+                                                                                                            <div class="call-to-action">
+                                                                                                                <a href="https://www.ca.com/us/trials/ca-application-performance-management.html?mrm=620656"
+                                                                                                                   class="button__default ">
+                                                                                                                    Free
+                                                                                                                    Trial</a>
+                                                                                                            </div>
+                                                                                                            <div class="call-to-action">
+                                                                                                                <a href="http://transform.ca.com/ca-application-performance-mgmt-101-demo.html"
+                                                                                                                   class="button__outline "
+                                                                                                                   target="_blank">
+                                                                                                                    Get
+                                                                                                                    Demo</a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="background-style parbase section">
+                                                                                                        <div ng-controller="bgstyleController"
+                                                                                                             class="ng-scope">
+                                                                                                            <div id=""
+                                                                                                                 class="background-style  White background-style--padding-top-10  background-style--padding-bottom-10     ">
+                                                                                                                <div class="background-style-par parsys">
+                                                                                                                    <div class="calltoaction section">
+                                                                                                                        <div style="text-align:left">
+                                                                                                                            <div class="call-to-action call-align">
+                                                                                                                                <a href="https://www.ca.com/us/products/ca-application-performance-management.html"
+                                                                                                                                   class="button__link button__link-normal ">
+                                                                                                                                    Learn
+                                                                                                                                    more
+                                                                                                                                    about
+                                                                                                                                    CA
+                                                                                                                                    APM&nbsp;&gt;</a>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="three-columns__column ">
+                                                                                <div>
+                                                                                    <div class="background-style parbase section">
+                                                                                        <div ng-controller="bgstyleController"
+                                                                                             class="ng-scope">
+                                                                                            <div id=""
+                                                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-30 "
+                                                                                                 dynamic-height-item=""
+                                                                                                 ng-style="dynamicStyle"
+                                                                                                 style="min-height: 287px;">
+                                                                                                <div class="background-style-par parsys">
+                                                                                                    <div class="text section">
+                                                                                                        <div class="text-comp font-black">
+                                                                                                            <h3><b>CA
+                                                                                                                App
+                                                                                                                Synthetic
+                                                                                                                Monitor</b>
+                                                                                                            </h3>
+                                                                                                            <p>Deliver
+                                                                                                                quality
+                                                                                                                software
+                                                                                                                to
+                                                                                                                market
+                                                                                                                earlier,
+                                                                                                                at less
+                                                                                                                cost, by
+                                                                                                                fully
+                                                                                                                automating
+                                                                                                                software
+                                                                                                                testing.
+                                                                                                            </p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="calltoaction section">
+                                                                                                        <div style="text-align:left">
+                                                                                                            <div class="call-to-action call-align">
+                                                                                                                <a href="https://www.ca.com/us/trials/ca-app-synthetic-monitor.html"
+                                                                                                                   class="button__default ">
+                                                                                                                    Free
+                                                                                                                    Trial</a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="background-style parbase section">
+                                                                                                        <div ng-controller="bgstyleController"
+                                                                                                             class="ng-scope">
+                                                                                                            <div id=""
+                                                                                                                 class="background-style  White background-style--padding-top-10       ">
+                                                                                                                <div class="background-style-par parsys">
+                                                                                                                    <div class="calltoaction section">
+                                                                                                                        <div style="text-align:left">
+                                                                                                                            <div class="call-to-action call-align">
+                                                                                                                                <a href="https://www.ca.com/us/products/ca-app-synthetic-monitor.html"
+                                                                                                                                   class="button__link button__link-normal ">
+                                                                                                                                    Learn
+                                                                                                                                    more
+                                                                                                                                    about
+                                                                                                                                    CA
+                                                                                                                                    App
+                                                                                                                                    Synthetic
+                                                                                                                                    Monitor&nbsp;&gt;</a>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="structure-three-columns section">
+                                                                    <div class="three-columns">
+                                                                        <div class="three-columns__container  ng-scope"
+                                                                             dynamic-height="true">
+                                                                            <div class="three-columns__column ">
+                                                                                <div>
+                                                                                    <div class="background-style parbase section">
+                                                                                        <div ng-controller="bgstyleController"
+                                                                                             class="ng-scope">
+                                                                                            <div id=""
+                                                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-20 "
+                                                                                                 dynamic-height-item=""
+                                                                                                 ng-style="dynamicStyle"
+                                                                                                 style="min-height: 321px;">
+                                                                                                <div class="background-style-par parsys">
+                                                                                                    <div class="text section">
+                                                                                                        <div class="text-comp font-black">
+                                                                                                            <h3>CA
+                                                                                                                Digital
+                                                                                                                Experience
+                                                                                                                Insights
+                                                                                                            </h3>
+                                                                                                            <p>Deliver
+                                                                                                                flawless
+                                                                                                                digital
+                                                                                                                experiences
+                                                                                                                with
+                                                                                                                analytics–driven
+                                                                                                                insights.<br>
+                                                                                                            </p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="calltoaction section">
+                                                                                                        <div style="text-align:left">
+                                                                                                            <div class="call-to-action call-align">
+                                                                                                                <a href="https://www.ca.com/us/trials/digital-experience-insights.html"
+                                                                                                                   class="button__default ">
+                                                                                                                    Free
+                                                                                                                    Trial</a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="background-style parbase section">
+                                                                                                        <div ng-controller="bgstyleController"
+                                                                                                             class="ng-scope">
+                                                                                                            <div id=""
+                                                                                                                 class="background-style  White background-style--padding-top-10       ">
+                                                                                                                <div class="background-style-par parsys">
+                                                                                                                    <div class="calltoaction section">
+                                                                                                                        <div style="text-align:left">
+                                                                                                                            <div class="call-to-action call-align">
+                                                                                                                                <a href="https://www.ca.com/us/products/digital-experience-monitoring.html"
+                                                                                                                                   class="button__link button__link-normal ">
+                                                                                                                                    Learn
+                                                                                                                                    more
+                                                                                                                                    about
+                                                                                                                                    CA
+                                                                                                                                    Digital
+                                                                                                                                    Experience
+                                                                                                                                    Insights&nbsp;&gt;</a>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="three-columns__column ">
+                                                                                <div>
+                                                                                    <div class="background-style parbase section">
+                                                                                        <div ng-controller="bgstyleController"
+                                                                                             class="ng-scope">
+                                                                                            <div id=""
+                                                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-20 "
+                                                                                                 dynamic-height-item=""
+                                                                                                 ng-style="dynamicStyle"
+                                                                                                 style="min-height: 321px;">
+                                                                                                <div class="background-style-par parsys">
+                                                                                                    <div class="text section">
+                                                                                                        <div class="text-comp font-black">
+                                                                                                            <h3><b>CA
+                                                                                                                App
+                                                                                                                Experience
+                                                                                                                Analytics</b>
+                                                                                                            </h3>
+                                                                                                            <p>Fix
+                                                                                                                crashes,
+                                                                                                                boost
+                                                                                                                performance
+                                                                                                                and get
+                                                                                                                to know
+                                                                                                                your
+                                                                                                                users
+                                                                                                                across
+                                                                                                                web,
+                                                                                                                mobile
+                                                                                                                and
+                                                                                                                wearables
+                                                                                                                with the
+                                                                                                                power of
+                                                                                                                analytics.
+                                                                                                            </p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="calltoaction section">
+                                                                                                        <div style="text-align:left">
+                                                                                                            <div class="call-to-action">
+                                                                                                                <a href="https://www.ca.com/us/trials/ca-app-experience-analytics.html?mrm=620657"
+                                                                                                                   class="button__default ">
+                                                                                                                    Free
+                                                                                                                    Trial</a>
+                                                                                                            </div>
+                                                                                                            <div class="call-to-action">
+                                                                                                                <a href="https://www.ca.com/us/trials/ca-app-experience-analytics-test-drive.html"
+                                                                                                                   class="button__outline ">
+                                                                                                                    Get
+                                                                                                                    Demo</a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="background-style parbase section">
+                                                                                                        <div ng-controller="bgstyleController"
+                                                                                                             class="ng-scope">
+                                                                                                            <div id=""
+                                                                                                                 class="background-style  White background-style--padding-top-10       ">
+                                                                                                                <div class="background-style-par parsys">
+                                                                                                                    <div class="calltoaction section">
+                                                                                                                        <div style="text-align:left">
+                                                                                                                            <div class="call-to-action call-align">
+                                                                                                                                <a href="https://www.ca.com/us/products/ca-app-experience-analytics.html"
+                                                                                                                                   class="button__link button__link-normal ">
+                                                                                                                                    Learn
+                                                                                                                                    more
+                                                                                                                                    about
+                                                                                                                                    CA
+                                                                                                                                    App
+                                                                                                                                    Experience
+                                                                                                                                    Analytics&nbsp;&gt;</a>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="three-columns__column ">
+                                                                                <div>
+                                                                                    <div class="background-style parbase section">
+                                                                                        <div ng-controller="bgstyleController"
+                                                                                             class="ng-scope">
+                                                                                            <div id=""
+                                                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-20 "
+                                                                                                 dynamic-height-item=""
+                                                                                                 ng-style="dynamicStyle"
+                                                                                                 style="min-height: 321px;">
+                                                                                                <div class="background-style-par parsys">
+                                                                                                    <div class="text section">
+                                                                                                        <div class="text-comp font-black">
+                                                                                                            <h3><b>CA
+                                                                                                                Unified
+                                                                                                                Infrastructure
+                                                                                                                Management&nbsp;</b>
+                                                                                                            </h3>
+                                                                                                            <p>Get a
+                                                                                                                unified
+                                                                                                                view and
+                                                                                                                architecture
+                                                                                                                to help
+                                                                                                                optimize
+                                                                                                                the
+                                                                                                                performance
+                                                                                                                of all
+                                                                                                                your
+                                                                                                                critical
+                                                                                                                systems,
+                                                                                                                networks
+                                                                                                                and
+                                                                                                                services
+                                                                                                                across
+                                                                                                                hybrid
+                                                                                                                IT
+                                                                                                                infrastructures.
+                                                                                                            </p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="calltoaction section">
+                                                                                                        <div style="text-align:left">
+                                                                                                            <div class="call-to-action call-align">
+                                                                                                                <a href="https://www.ca.com/us/trials/ca-unified-infrastructure-management.html?mrm=621114"
+                                                                                                                   class="button__default ">
+                                                                                                                    Free
+                                                                                                                    Trial</a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="background-style parbase section">
+                                                                                                        <div ng-controller="bgstyleController"
+                                                                                                             class="ng-scope">
+                                                                                                            <div id=""
+                                                                                                                 class="background-style  White background-style--padding-top-10       ">
+                                                                                                                <div class="background-style-par parsys">
+                                                                                                                    <div class="calltoaction section">
+                                                                                                                        <div style="text-align:left">
+                                                                                                                            <div class="call-to-action call-align">
+                                                                                                                                <a href="https://www.ca.com/us/products/ca-unified-infrastructure-management.html"
+                                                                                                                                   class="button__link button__link-normal ">
+                                                                                                                                    Learn
+                                                                                                                                    more
+                                                                                                                                    about
+                                                                                                                                    CA
+                                                                                                                                    UIM&nbsp;&gt;</a>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="structure-three-columns section">
+                                                                    <div class="three-columns">
+                                                                        <div class="three-columns__container  ng-scope"
+                                                                             dynamic-height="true">
+                                                                            <div class="three-columns__column ">
+                                                                                <div>
+                                                                                    <div class="background-style parbase section">
+                                                                                        <div ng-controller="bgstyleController"
+                                                                                             class="ng-scope">
+                                                                                            <div id=""
+                                                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-20 "
+                                                                                                 dynamic-height-item=""
+                                                                                                 ng-style="dynamicStyle"
+                                                                                                 style="min-height: 318px;">
+                                                                                                <div class="background-style-par parsys">
+                                                                                                    <div class="text section">
+                                                                                                        <div class="text-comp font-black">
+                                                                                                            <h3>CA
+                                                                                                                Automic
+                                                                                                                Workload
+                                                                                                                Automation
+                                                                                                            </h3>
+                                                                                                            <p>Deliver
+                                                                                                                continuous
+                                                                                                                operations
+                                                                                                                with
+                                                                                                                your
+                                                                                                                business
+                                                                                                                application
+                                                                                                                processing
+                                                                                                                using
+                                                                                                                Automic
+                                                                                                                Workload
+                                                                                                                Automation.
+                                                                                                            </p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="calltoaction section">
+                                                                                                        <div style="text-align:left">
+                                                                                                            <div class="call-to-action call-align">
+                                                                                                                <a href="https://offers.automic.com/preview-the-possible?preview_interests=Workload%20Automation"
+                                                                                                                   class="button__default "
+                                                                                                                   target="_blank">
+                                                                                                                    Free
+                                                                                                                    Trial</a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="background-style parbase section">
+                                                                                                        <div ng-controller="bgstyleController"
+                                                                                                             class="ng-scope">
+                                                                                                            <div id=""
+                                                                                                                 class="background-style  White background-style--padding-top-10       ">
+                                                                                                                <div class="background-style-par parsys">
+                                                                                                                    <div class="calltoaction section">
+                                                                                                                        <div style="text-align:left">
+                                                                                                                            <div class="call-to-action call-align">
+                                                                                                                                <a href="https://automic.com/products/automic-workload-automation"
+                                                                                                                                   class="button__link button__link-normal "
+                                                                                                                                   target="_blank">
+                                                                                                                                    Learn
+                                                                                                                                    more
+                                                                                                                                    about
+                                                                                                                                    CA
+                                                                                                                                    Automic
+                                                                                                                                    Workload
+                                                                                                                                    Automation&nbsp;&gt;</a>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="three-columns__column ">
+                                                                                <div>
+                                                                                    <div class="background-style parbase section">
+                                                                                        <div ng-controller="bgstyleController"
+                                                                                             class="ng-scope">
+                                                                                            <div id=""
+                                                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-20 "
+                                                                                                 dynamic-height-item=""
+                                                                                                 ng-style="dynamicStyle"
+                                                                                                 style="min-height: 318px;">
+                                                                                                <div class="background-style-par parsys">
+                                                                                                    <div class="text section">
+                                                                                                        <div class="text-comp font-black">
+                                                                                                            <h3><b>CA
+                                                                                                                Automic&nbsp;Service
+                                                                                                                Orchestration</b>
+                                                                                                            </h3>
+                                                                                                            <p>If your
+                                                                                                                organization
+                                                                                                                demands
+                                                                                                                flexibility
+                                                                                                                and
+                                                                                                                scalability,
+                                                                                                                our
+                                                                                                                intelligent
+                                                                                                                automation
+                                                                                                                can help
+                                                                                                                you
+                                                                                                                succeed.
+                                                                                                            </p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="calltoaction section">
+                                                                                                        <div style="text-align:left">
+                                                                                                            <div class="call-to-action call-align">
+                                                                                                                <a href="https://offers.automic.com/preview-the-possible?preview_interests=Service%20Orchestration"
+                                                                                                                   class="button__default "
+                                                                                                                   target="_blank">
+                                                                                                                    Free
+                                                                                                                    Trial</a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="background-style parbase section">
+                                                                                                        <div ng-controller="bgstyleController"
+                                                                                                             class="ng-scope">
+                                                                                                            <div id=""
+                                                                                                                 class="background-style  White background-style--padding-top-10       ">
+                                                                                                                <div class="background-style-par parsys">
+                                                                                                                    <div class="calltoaction section">
+                                                                                                                        <div style="text-align:left">
+                                                                                                                            <div class="call-to-action call-align">
+                                                                                                                                <a href="https://automic.com/products/automic-service-orchestration"
+                                                                                                                                   class="button__link button__link-normal "
+                                                                                                                                   target="_blank">
+                                                                                                                                    Learn
+                                                                                                                                    more
+                                                                                                                                    about
+                                                                                                                                    CA
+                                                                                                                                    Automic
+                                                                                                                                    Service
+                                                                                                                                    Orchestration&nbsp;&gt;</a>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="three-columns__column ">
+                                                                                <div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="structure-one-column section">
+                                                    <div class="one-column">
+                                                        <div class="one-column__container ">
+                                                            <div>
+                                                                <div class="text section">
+                                                                    <div class="text-comp font-black">
+                                                                        <h2><a name="6"></a>Secure</h2>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="structure-three-columns section">
+                                                                    <div class="three-columns">
+                                                                        <div class="three-columns__container ">
+                                                                            <div class="three-columns__column ">
+                                                                                <div>
+                                                                                    <div class="background-style parbase section">
+                                                                                        <div ng-controller="bgstyleController"
+                                                                                             class="ng-scope">
+                                                                                            <div id=""
+                                                                                                 class="background-style  background-style--white background-style--padding-top-10 background-style--padding-right-20 background-style--padding-bottom-20 background-style--padding-left-20   background-style--margin-bottom-20 ">
+                                                                                                <div class="background-style-par parsys">
+                                                                                                    <div class="text section">
+                                                                                                        <div class="text-comp font-black">
+                                                                                                            <h3><b>CA
+                                                                                                                Identity
+                                                                                                                Service</b>
+                                                                                                            </h3>
+                                                                                                            <p>Get
+                                                                                                                unmatched
+                                                                                                                control
+                                                                                                                over
+                                                                                                                your
+                                                                                                                SaaS
+                                                                                                                environment.
+                                                                                                            </p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="calltoaction section">
+                                                                                                        <div style="text-align:left">
+                                                                                                            <div class="call-to-action call-align">
+                                                                                                                <a href="https://www.ca.com/us/trials/ca-identity-service.html"
+                                                                                                                   class="button__default ">
+                                                                                                                    Free
+                                                                                                                    Trial</a>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="background-style parbase section">
+                                                                                                        <div ng-controller="bgstyleController"
+                                                                                                             class="ng-scope">
+                                                                                                            <div id=""
+                                                                                                                 class="background-style   background-style--padding-top-10       ">
+                                                                                                                <div class="background-style-par parsys">
+                                                                                                                    <div class="calltoaction section">
+                                                                                                                        <div style="text-align:left">
+                                                                                                                            <div class="call-to-action call-align">
+                                                                                                                                <a href="https://www.ca.com/us/products/ca-identity-service.html"
+                                                                                                                                   class="button__link button__link-normal ">
+                                                                                                                                    Learn
+                                                                                                                                    more
+                                                                                                                                    about
+                                                                                                                                    CA
+                                                                                                                                    Identity
+                                                                                                                                    Service&nbsp;&gt;</a>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="three-columns__column ">
+                                                                                <div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="three-columns__column ">
+                                                                                <div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
